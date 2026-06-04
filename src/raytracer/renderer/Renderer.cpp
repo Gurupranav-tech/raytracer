@@ -30,20 +30,26 @@ void Renderer::on_resize(uint32_t width, uint32_t height) {
   camera.on_screen_resize(width, height);
 }
 
-bool hit_sphere(const glm::vec3 &center, float radius, const Ray &r) {
+float hit_sphere(const glm::vec3 &center, float radius, const Ray &r) {
   glm::vec3 oc = center - r.get_origin();
   float a = glm::dot(r.get_direction(), r.get_direction()); // dot(d,d)
-  float b = -2.0f * glm::dot(r.get_direction(), oc);        // -2 dot(d,oc)
+  float b = glm::dot(r.get_direction(), oc);                // -2 dot(d,oc)
   float c = glm::dot(oc, oc) - radius * radius;             // dot(oc,oc) - r²
-  float disc = b * b - 4.0f * a * c;
-  return disc >= 0.0f;
+  float disc = b * b - a * c;
+
+  if (disc < 0)
+    return -1;
+  else
+    return (b - std::sqrt(disc)) / a;
 }
 
 uint32_t Renderer::pixel(glm::vec2 coord) {
   auto ray = camera.get_ray(coord.x, coord.y);
 
-  if (hit_sphere({0, 0, -1}, 0.5, ray))
-    return to_color({255, 0, 0});
+  if (float t = hit_sphere({0, 0, -1}, 0.5, ray); t > 0.0) {
+    auto N = glm::normalize(ray.at(t) - glm::vec3{0, 0, -1});
+    return to_color((N + glm::vec3{1, 1, 1}) * 0.5f * 255.0f);
+  }
 
   auto direction = ray.get_direction();
   direction = direction / (float)direction.length();

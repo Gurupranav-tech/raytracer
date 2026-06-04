@@ -17,6 +17,7 @@ int main() {
   window.run([&](float) {
     ImGui::Begin("Settings");
     ImGui::Text("Last Render Time: %.3fms", last_render_time);
+    ImGui::Text("FPS: %.3ffps", 1000 / last_render_time);
     // if (ImGui::Button("Render")) {
     engine::Timer timer;
     app.render();

@@ -23,6 +23,7 @@ public:
   void set_viewport(uint32_t viewport_width, uint32_t viewport_height);
 
   void on_zoom(float zoom);
+  void on_center_change(glm::vec3 dc);
 
   inline const std::shared_ptr<engine::Image> &get_image() {
     return renderer.get_image();

@@ -6,8 +6,7 @@ Camera::Camera(const glm::vec3 &camera_origin, float focal_length,
   init(width, height);
 }
 
-Camera::Camera()
-  : camera_center{0.0f, 0.0f, 0.0f}, focal_length{1.0f} {}
+Camera::Camera() : camera_center{0.0f, 0.0f, 0.0f}, focal_length{1.0f} {}
 
 Ray Camera::get_ray(uint32_t i, uint32_t j) const noexcept {
   auto pixel_center = pixel00 + (float(i) * delta_u) + (float(j) * delta_v);
@@ -19,6 +18,11 @@ Ray Camera::get_ray(uint32_t i, uint32_t j) const noexcept {
 
 void Camera::zoom(float zoom, uint32_t width, uint32_t height) {
   focal_length += zoom / 10;
+  init(width, height);
+}
+
+void Camera::change_center(glm::vec3 dc, uint32_t width, uint32_t height) {
+  camera_center += dc;
   init(width, height);
 }
 

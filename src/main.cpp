@@ -36,6 +36,19 @@ int main() {
         constexpr float sensitivity = 0.005f;
       }
 
+      if (ImGui::IsKeyPressed(ImGuiKey_L)) {
+        app.on_center_change({0.1, 0, 0});
+      }
+      if (ImGui::IsKeyPressed(ImGuiKey_H)) {
+        app.on_center_change({-0.1, 0, 0});
+      }
+      if (ImGui::IsKeyPressed(ImGuiKey_J)) {
+        app.on_center_change({0, 0.1, 0});
+      }
+      if (ImGui::IsKeyPressed(ImGuiKey_K)) {
+        app.on_center_change({0, -0.1, 0});
+      }
+
       float wheel = io.MouseWheel;
       if (wheel != 0.0f) {
         app.on_zoom(wheel);

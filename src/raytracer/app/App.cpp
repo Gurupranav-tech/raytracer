@@ -16,6 +16,10 @@ void App::on_zoom(float zoom) {
   camera.zoom(zoom, viewport_width, viewport_height);
 }
 
+void App::on_center_change(glm::vec3 dc) {
+  camera.change_center(dc, viewport_width, viewport_height);
+}
+
 void App::set_viewport(uint32_t viewport_width, uint32_t viewport_height) {
   this->viewport_height = viewport_height;
   this->viewport_width = viewport_width;

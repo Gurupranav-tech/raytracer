@@ -18,6 +18,8 @@ public:
 
   void zoom(float zoom, uint32_t width, uint32_t height);
 
+  void change_center(glm::vec3 dc, uint32_t width, uint32_t height);
+
   inline void on_screen_resize(uint32_t width, uint32_t height) noexcept {
     init(width, height);
   }

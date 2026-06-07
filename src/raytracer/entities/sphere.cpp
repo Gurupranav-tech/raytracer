@@ -24,9 +24,10 @@ HitResult Sphere::hit(const Ray &r, float tmin, float tmax) const {
 
   HitRecord record = {
       .point = r.at(root),
-      .normal = (r.at(root) - center) / radius,
       .t = root,
   };
+  auto outward_normal = (r.at(root) - center) / radius;
+  record.set_face_normal(r, outward_normal);
 
   return record;
 }

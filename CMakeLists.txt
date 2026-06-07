@@ -2,8 +2,12 @@ cmake_minimum_required(VERSION 3.24)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 project(raytracer)
 
+find_package(OpenGL REQUIRED)
 
 file(GLOB SOURCE_FILES CONFIGURE_DEPENDS "./src/*.c" "./src/engine/**/*.c" "./src/engine/*.c" "./src/*.cpp" "./src/engine/**/*.cpp" "./src/engine/*.cpp" "./src/raytracer/**/*.cpp")
 
@@ -19,4 +23,4 @@ target_include_directories(raytracer PUBLIC "./vendor/glad")
 target_include_directories(raytracer PUBLIC "./vendor/glm/")
 target_include_directories(raytracer PUBLIC "./vendor/imgui")
 
-target_link_libraries(raytracer PUBLIC glfw imgui)
+target_link_libraries(raytracer PUBLIC glfw imgui OpenGL::GL)

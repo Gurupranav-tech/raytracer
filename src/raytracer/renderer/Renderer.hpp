@@ -3,10 +3,11 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include <raytracer/camera/Camera.hpp>
+#include <raytracer/entities/hittable_list.hpp>
 
 class Renderer {
 public:
-  Renderer() = default;
+  Renderer();
 
   void render();
   void on_resize(uint32_t width, uint32_t height);
@@ -19,6 +20,7 @@ private:
   std::shared_ptr<engine::Image> image;
   uint32_t *image_data = nullptr;
   Camera camera;
+  HittableList world;
 
   uint32_t pixel(glm::vec2 coord);
 };

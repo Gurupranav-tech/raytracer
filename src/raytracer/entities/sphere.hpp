@@ -9,5 +9,5 @@ private:
 public:
   Sphere(const glm::vec3 &center, float radius);
 
-  virtual HitResult hit(const Ray &r, float tmin, float tmax) const override;
+  virtual HitResult hit(const Ray &r, const Interval& ray_t) const override;
 };

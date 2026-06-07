@@ -1,7 +1,6 @@
 #include "Renderer.hpp"
 #include <cmath>
 #include <glm/glm.hpp>
-#include <limits>
 #include <raytracer/entities/sphere.hpp>
 
 constexpr uint32_t to_color(const glm::vec3 &col);
@@ -14,7 +13,7 @@ Renderer::Renderer() {
 uint32_t Renderer::pixel(glm::vec2 coord) {
   auto ray = camera.get_ray(coord.x, coord.y);
 
-  if (auto rec = world.hit(ray, 0, std::numeric_limits<float>::infinity()); rec.has_value()) {
+  if (auto rec = world.hit(ray, Interval{0, INFINITY}); rec.has_value()) {
     return to_color((0.5f * (rec->normal + glm::vec3(1, 1, 1))) * 255.0f);
   }
 

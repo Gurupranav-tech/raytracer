@@ -16,5 +16,5 @@ public:
   void clear();
   void add(std::shared_ptr<Hittable> object);
 
-  HitResult hit(const Ray &r, float tmin, float tmax) const override;
+  HitResult hit(const Ray &r, const Interval& ray_t) const override;
 };

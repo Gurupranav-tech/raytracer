@@ -3,7 +3,7 @@
 Sphere::Sphere(const glm::vec3 &center, float radius)
     : center{center}, radius{radius} {}
 
-HitResult Sphere::hit(const Ray &r, float tmin, float tmax) const {
+HitResult Sphere::hit(const Ray &r, const Interval& ray_t) const {
   auto oc = center - r.get_origin();
   auto a = glm::dot(r.get_direction(), r.get_direction());
   auto h = glm::dot(oc, r.get_direction());
@@ -16,9 +16,9 @@ HitResult Sphere::hit(const Ray &r, float tmin, float tmax) const {
   auto sqrtd = std::sqrt(discriminant);
 
   auto root = (h - sqrtd) / a;
-  if (root <= tmin || tmax <= root) {
+  if (!ray_t.surrounds(root)) {
     root = (h + sqrtd) / a;
-    if (root <= tmin || tmax <= root)
+    if (!ray_t.surrounds(root))
       return std::nullopt;
   }
 

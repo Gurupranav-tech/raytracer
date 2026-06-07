@@ -1,6 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <optional>
+#include <raytracer/math/interval.hpp>
 #include <raytracer/math/ray.hpp>
 
 struct HitRecord {
@@ -21,5 +22,5 @@ class Hittable {
 public:
   virtual ~Hittable() = default;
 
-  virtual HitResult hit(const Ray &r, float tmin, float tmax) const = 0;
+  virtual HitResult hit(const Ray &r, const Interval& ray_t) const = 0;
 };

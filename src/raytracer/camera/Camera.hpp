@@ -28,4 +28,5 @@ public:
 
 private:
   void init(uint32_t width, uint32_t height) noexcept;
+  glm::vec3 sample_square() const noexcept;
 };

@@ -7,7 +7,7 @@
 
 class Renderer {
 public:
-  Renderer(Camera& camera, HittableList& world);
+  Renderer(Camera &camera, HittableList &world, uint32_t samples_per_pixel = 2);
 
   void render();
   void on_resize(uint32_t width, uint32_t height);
@@ -19,8 +19,9 @@ public:
 private:
   std::shared_ptr<engine::Image> image;
   uint32_t *image_data = nullptr;
-  Camera& camera;
-  HittableList& world;
+  Camera &camera;
+  HittableList &world;
+  uint32_t samples_per_pixel;
 
   uint32_t pixel(glm::vec2 coord);
 };

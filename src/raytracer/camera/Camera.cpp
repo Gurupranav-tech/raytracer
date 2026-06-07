@@ -1,4 +1,5 @@
 #include "Camera.hpp"
+#include "engine/random/Random.hpp"
 
 Camera::Camera(const glm::vec3 &camera_origin, float focal_length,
                uint32_t width, uint32_t height)
@@ -9,10 +10,11 @@ Camera::Camera(const glm::vec3 &camera_origin, float focal_length,
 Camera::Camera() : camera_center{0.0f, 0.0f, 0.0f}, focal_length{1.0f} {}
 
 Ray Camera::get_ray(uint32_t i, uint32_t j) const noexcept {
-  auto pixel_center = pixel00 + (float(i) * delta_u) + (float(j) * delta_v);
+  auto offset = sample_square();
+  auto pixel_center = pixel00 + (float(i + offset.x) * delta_u) +
+                      (float(j + offset.y) * delta_v);
   auto ray_direction = pixel_center - camera_center;
   Ray ray(camera_center, ray_direction);
-
   return ray;
 }
 
@@ -41,4 +43,9 @@ void Camera::init(uint32_t width, uint32_t height) noexcept {
   auto viewport_upper_left = camera_center - glm::vec3(0, 0, focal_length) -
                              viewport_u / 2.0f - viewport_v / 2.0f;
   pixel00 = viewport_upper_left + 0.5f * (delta_u + delta_v);
+}
+
+glm::vec3 Camera::sample_square() const noexcept {
+  return glm::vec3{engine::Random::random_float() - 0.5f,
+                   engine::Random::random_float() - 0.5f, 0.0f};
 }

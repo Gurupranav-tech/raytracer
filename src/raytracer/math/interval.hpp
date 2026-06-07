@@ -3,7 +3,6 @@
 
 class Interval {
 private:
-
 public:
   float tmin, tmax;
 
@@ -12,9 +11,22 @@ public:
 
   Interval(float tmin, float tmax) : tmin{tmin}, tmax{tmax} {}
 
-  bool contains(float t) const noexcept { return tmin <= t && t <= tmax; }
+  constexpr bool contains(float t) const noexcept {
+    return tmin <= t && t <= tmax;
+  }
 
-  bool surrounds(float t) const noexcept { return tmin < t && t < tmax; }
+  constexpr bool surrounds(float t) const noexcept {
+    return tmin < t && t < tmax;
+  }
+
+  constexpr float clamp(float t) const noexcept {
+    if (t < tmin)
+      return tmin;
+    if (t > tmax)
+      return tmax;
+
+    return t;
+  }
 
   constexpr float length() const noexcept { return tmax - tmin; }
 

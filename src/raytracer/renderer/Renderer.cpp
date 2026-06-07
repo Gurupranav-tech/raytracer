@@ -5,9 +5,8 @@
 
 constexpr uint32_t to_color(const glm::vec3 &col);
 
-Renderer::Renderer() {
-  world.add(std::make_shared<Sphere>(glm::vec3(0.0f, 0.0f, -1.0f), 0.5f));
-  world.add(std::make_shared<Sphere>(glm::vec3(0.0f, -100.5f, -1.0f), 100.0f));
+Renderer::Renderer(Camera &camera, HittableList &world)
+    : camera{camera}, world{world} {
 }
 
 uint32_t Renderer::pixel(glm::vec2 coord) {

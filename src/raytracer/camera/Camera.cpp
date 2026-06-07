@@ -17,6 +17,11 @@ Ray Camera::get_ray(uint32_t i, uint32_t j) const noexcept {
   return ray;
 }
 
+void Camera::zoom(float zoom, uint32_t width, uint32_t height) {
+  focal_length += zoom / 10;
+  init(width, height);
+}
+
 void Camera::init(uint32_t width, uint32_t height) noexcept {
   float aspect_ratio = float(width) / height;
 

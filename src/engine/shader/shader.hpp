@@ -13,7 +13,8 @@ public:
 
   void bind(bool b = true);
   void set_uniform(const char *name, int val);
-  void set_uniform(const char* name, glm::mat4& mat);
+  void set_uniform(const char *name, float val);
+  void set_uniform(const char *name, glm::mat4 &mat);
 
 private:
   static std::string read_file(const std::string &file);

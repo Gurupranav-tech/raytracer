@@ -1,4 +1,5 @@
 #include "Renderer.hpp"
+#include "raytracer/config.hpp"
 #include "raytracer/math/interval.hpp"
 #include <cmath>
 #include <glm/glm.hpp>
@@ -10,22 +11,33 @@ Renderer::Renderer(Camera &camera, HittableList &world,
                    uint32_t samples_per_pixel)
     : camera{camera}, world{world}, samples_per_pixel{samples_per_pixel} {}
 
+glm::vec3 Renderer::pixel_color(const Ray &ray) {
+  if (depth <= 0)
+    return {0, 0, 0};
+
+  depth--;
+  if (auto rec = world.hit(ray, Interval{MIN_DISTANCE_BTN_CONSECUTIVE_HITS, INFINITY}); rec.has_value()) {
+    glm::vec3 direction = Ray::random_on_hemisphere(rec->normal);
+    return 0.5f * pixel_color(Ray{rec->point, direction});
+  }
+
+  auto direction = ray.get_direction();
+  direction = direction / (float)glm::length(direction);
+  auto a = 0.5f * (direction.y + 1.0f);
+
+  glm::vec3 color =
+      (1.0f - a) * glm::vec3(1.0, 1.0, 1.0) + a * glm::vec3(0.5, 0.7, 1.0);
+  return color;
+}
+
 uint32_t Renderer::pixel(glm::vec2 coord) {
   glm::vec3 color{};
 
   for (uint32_t k = 0; k < samples_per_pixel; k++) {
     auto ray = camera.get_ray(coord.x, coord.y);
-    if (auto rec = world.hit(ray, Interval{0, INFINITY}); rec.has_value()) {
-      color += 0.5f * (rec->normal + glm::vec3(1, 1, 1));
-      continue;
-    }
+    depth = MAX_DEPTH;
+    auto col = pixel_color(ray);
 
-    auto direction = ray.get_direction();
-    direction = direction / (float)direction.length();
-    auto a = 0.5f * (direction.y + 1.0f);
-
-    glm::vec3 col =
-        (1.0f - a) * glm::vec3(1.0, 1.0, 1.0) + a * glm::vec3(0.5, 0.7, 1.0);
     color += col;
   }
 
@@ -33,7 +45,6 @@ uint32_t Renderer::pixel(glm::vec2 coord) {
 }
 
 void Renderer::render() {
-#pragma omp parallel for schedule(dynamic)
   for (uint32_t y = 0; y < image->GetHeight(); y++) {
     for (uint32_t x = 0; x < image->GetWidth(); x++) {
       image_data[x + y * image->GetWidth()] = pixel({x, y});

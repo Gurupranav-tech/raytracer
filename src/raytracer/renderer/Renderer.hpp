@@ -1,4 +1,5 @@
 #pragma once
+#include <raytracer/config.hpp>
 #include <engine/image/Image.hpp>
 #include <glm/glm.hpp>
 #include <memory>
@@ -17,11 +18,16 @@ public:
   }
 
 private:
+  static constexpr uint32_t MAX_DEPTH = RENDER_MAX_DEPTH;
+
   std::shared_ptr<engine::Image> image;
   uint32_t *image_data = nullptr;
   Camera &camera;
   HittableList &world;
   uint32_t samples_per_pixel;
+  uint32_t depth = MAX_DEPTH;
 
   uint32_t pixel(glm::vec2 coord);
+
+  glm::vec3 pixel_color(const Ray &ray);
 };

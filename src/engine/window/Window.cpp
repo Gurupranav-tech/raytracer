@@ -1,4 +1,5 @@
 #include "Window.hpp"
+#include <iostream>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <backends/imgui_impl_glfw.h>
@@ -24,7 +25,13 @@ Window::Window(unsigned int width, unsigned int height,
     throw std::runtime_error("Cannot create window");
   glfwMakeContextCurrent(g_Window);
   gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+  std::cout << glGetString(GL_VENDOR) << '\n';
+  std::cout << glGetString(GL_RENDERER) << '\n';
+  std::cout << glGetString(GL_VERSION) << '\n';
+  std::cout << glGetString(GL_SHADING_LANGUAGE_VERSION) << '\n';
   glEnable(GL_DEPTH_TEST);
+  glViewport(0, 0, width, height);
 
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
@@ -87,9 +94,9 @@ void Window::run(std::function<void(float)> fn) {
     ImGui::End();
 
     fn((float)glfwGetTime());
-
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
     glfwSwapBuffers(g_Window);
   }
 }

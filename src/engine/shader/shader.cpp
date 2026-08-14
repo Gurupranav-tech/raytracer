@@ -65,7 +65,13 @@ void Shader::bind(bool b) {
 void Shader::set_uniform(const char *name, int val) {
   bind();
   int location = glGetUniformLocation(program, name);
-  glUniform1i(location, val);
+  glUniform1f(location, val);
+}
+
+void Shader::set_uniform(const char *name, float val) {
+  bind();
+  int location = glGetUniformLocation(program, name);
+  glUniform1f(location, val);
 }
 
 void Shader::set_uniform(const char *name, glm::mat4 &mat) {

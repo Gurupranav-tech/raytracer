@@ -1,11 +1,12 @@
 #include "Renderer.hpp"
 #include "raytracer/config.hpp"
 #include "raytracer/math/interval.hpp"
+#include "raytracer/math/utils.hpp"
 #include <cmath>
 #include <glm/glm.hpp>
 #include <raytracer/entities/sphere.hpp>
 
-uint32_t to_color(const glm::vec3 &col);
+uint32_t to_color(glm::vec3 &&col);
 
 Renderer::Renderer(Camera &camera, HittableList &world,
                    uint32_t samples_per_pixel)
@@ -16,8 +17,10 @@ glm::vec3 Renderer::pixel_color(const Ray &ray) {
     return {0, 0, 0};
 
   depth--;
-  if (auto rec = world.hit(ray, Interval{MIN_DISTANCE_BTN_CONSECUTIVE_HITS, INFINITY}); rec.has_value()) {
-    glm::vec3 direction = Ray::random_on_hemisphere(rec->normal);
+  if (auto rec =
+          world.hit(ray, Interval{MIN_DISTANCE_BTN_CONSECUTIVE_HITS, INFINITY});
+      rec.has_value()) {
+    glm::vec3 direction = rec->normal + Ray::random_on_hemisphere(rec->normal);
     return 0.5f * pixel_color(Ray{rec->point, direction});
   }
 
@@ -45,7 +48,9 @@ uint32_t Renderer::pixel(glm::vec2 coord) {
 }
 
 void Renderer::render() {
+#pragma omp parallel for
   for (uint32_t y = 0; y < image->GetHeight(); y++) {
+#pragma omp parallel for
     for (uint32_t x = 0; x < image->GetWidth(); x++) {
       image_data[x + y * image->GetWidth()] = pixel({x, y});
     }
@@ -70,8 +75,12 @@ void Renderer::on_resize(uint32_t width, uint32_t height) {
   camera.on_screen_resize(width, height);
 }
 
-uint32_t to_color(const glm::vec3 &col) {
+uint32_t to_color(glm::vec3 &&col) {
   const Interval intensity{0.0f, 0.9999f};
+
+  col.r = linear_to_gamma(col.r);
+  col.b = linear_to_gamma(col.b);
+  col.g = linear_to_gamma(col.g);
 
   uint32_t r = intensity.clamp(col.r) * 255.0f;
   uint32_t g = intensity.clamp(col.g) * 255.0f;

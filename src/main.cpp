@@ -14,6 +14,7 @@ int main() {
   std::cout << "GPU being used: " << gpu << "\n";
 
   float last_render_time = 0.0f;
+  bool changed = true;
   window.run([&](float) {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
     ImGui::Begin("Viewport");
@@ -38,20 +39,25 @@ int main() {
 
       if (ImGui::IsKeyPressed(ImGuiKey_L)) {
         app.on_center_change({0.1, 0, 0});
+        changed = true;
       }
       if (ImGui::IsKeyPressed(ImGuiKey_H)) {
         app.on_center_change({-0.1, 0, 0});
+        changed = true;
       }
       if (ImGui::IsKeyPressed(ImGuiKey_J)) {
         app.on_center_change({0, 0.1, 0});
+        changed = true;
       }
       if (ImGui::IsKeyPressed(ImGuiKey_K)) {
         app.on_center_change({0, -0.1, 0});
+        changed = true;
       }
 
       float wheel = io.MouseWheel;
       if (wheel != 0.0f) {
         app.on_zoom(wheel);
+        changed = true;
       }
     }
 
@@ -61,11 +67,12 @@ int main() {
     ImGui::Begin("Settings");
     ImGui::Text("Last Render Time: %.3fms", last_render_time);
     ImGui::Text("FPS: %.3ffps", 1000 / last_render_time);
-    // if (ImGui::Button("Render")) {
-    engine::Timer timer;
-    app.render();
-    last_render_time = timer.elasped_time();
-    // }
+    if (ImGui::Button("Render") || changed) {
+      engine::Timer timer;
+      app.render();
+      last_render_time = timer.elasped_time();
+      changed = false;
+    }
     ImGui::End();
   });
 }

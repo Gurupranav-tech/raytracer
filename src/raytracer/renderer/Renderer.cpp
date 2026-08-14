@@ -20,8 +20,12 @@ glm::vec3 Renderer::pixel_color(const Ray &ray) {
   if (auto rec =
           world.hit(ray, Interval{MIN_DISTANCE_BTN_CONSECUTIVE_HITS, INFINITY});
       rec.has_value()) {
-    glm::vec3 direction = rec->normal + Ray::random_on_hemisphere(rec->normal);
-    return 0.5f * pixel_color(Ray{rec->point, direction});
+    if (auto scatter_rec = rec->mat->scatter(ray, *rec);
+        scatter_rec.has_value()) {
+      auto& [scattered, attentuation] = *scatter_rec;
+      return attentuation * pixel_color(scattered);
+    }
+    return {0, 0, 0};
   }
 
   auto direction = ray.get_direction();

@@ -42,4 +42,10 @@ public:
     else
       return -vector;
   }
+
+  static inline glm::vec3 reflect(const glm::vec3 &direction,
+                                  const glm::vec3 &normal) {
+    float along_component = glm::dot(direction, normal);
+    return direction - 2 * along_component * normal;
+  }
 };

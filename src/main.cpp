@@ -6,6 +6,8 @@
 #include <raytracer/app/App.hpp>
 #include <raytracer/config.hpp>
 
+#define REALTIME 1
+
 int main() {
   engine::Window window(WIDTH, HEIGHT, "Raytracer");
   App app;
@@ -67,12 +69,19 @@ int main() {
     ImGui::Begin("Settings");
     ImGui::Text("Last Render Time: %.3fms", last_render_time);
     ImGui::Text("FPS: %.3ffps", 1000 / last_render_time);
+#ifdef REALTIME
+    engine::Timer timer;
+    app.render();
+    last_render_time = timer.elasped_time();
+    changed = false;
+#else
     if (ImGui::Button("Render") || changed) {
       engine::Timer timer;
       app.render();
       last_render_time = timer.elasped_time();
       changed = false;
     }
+#endif
     ImGui::End();
   });
 }

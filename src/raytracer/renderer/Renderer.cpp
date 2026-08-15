@@ -22,7 +22,7 @@ glm::vec3 Renderer::pixel_color(const Ray &ray) {
       rec.has_value()) {
     if (auto scatter_rec = rec->mat->scatter(ray, *rec);
         scatter_rec.has_value()) {
-      auto& [scattered, attentuation] = *scatter_rec;
+      auto &[scattered, attentuation] = *scatter_rec;
       return attentuation * pixel_color(scattered);
     }
     return {0, 0, 0};
@@ -52,12 +52,12 @@ uint32_t Renderer::pixel(glm::vec2 coord) {
 }
 
 void Renderer::render() {
-#pragma omp parallel for
   for (uint32_t y = 0; y < image->GetHeight(); y++) {
-#pragma omp parallel for
     for (uint32_t x = 0; x < image->GetWidth(); x++) {
       image_data[x + y * image->GetWidth()] = pixel({x, y});
     }
+    if (y % 100 == 0)
+      printf("100 columns done, at: %i\n", y);
   }
 
   image->SetData(image_data);

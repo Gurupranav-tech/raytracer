@@ -43,9 +43,28 @@ public:
       return -vector;
   }
 
+  static inline glm::vec3 random_in_unitdisc() {
+    while (true) {
+      auto vector = glm::vec3{engine::Random::random_float(),
+                              engine::Random::random_float(), 0.0f};
+      if (glm::length(vector) < 1.0f)
+        return vector;
+    }
+  }
+
   static inline glm::vec3 reflect(const glm::vec3 &direction,
                                   const glm::vec3 &normal) {
     float along_component = glm::dot(direction, normal);
     return direction - 2 * along_component * normal;
+  }
+
+  static inline glm::vec3 refract(const glm::vec3 &dirn,
+                                  const glm::vec3 &normal, float n) {
+    auto theta = std::fmin(glm::dot(-dirn, normal), 1.0f);
+    auto perp = n * (dirn + theta * normal);
+    auto parallel =
+        -(float)std::sqrt(std::fabs(1.0 - std::pow(glm::length(perp), 2))) *
+        normal;
+    return perp + parallel;
   }
 };
